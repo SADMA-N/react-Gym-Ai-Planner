@@ -6,23 +6,26 @@ import Account from "./pages/Account";
 import Navbar from "./components/layout/Navbar";
 import { NeonAuthUIProvider } from "@neondatabase/neon-js/auth/react";
 import { authClient } from "./lib/auth";
+import AuthProvider from "./context/AuthContext";
 
 function App() {
   return (
     <NeonAuthUIProvider authClient={authClient}>
-      <BrowserRouter>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1">
-            <Routes>
-              <Route index element={<Home />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/auth/:pathname" element={<Auth />} />
-              <Route path="/account/:pathname" element={<Account />} />
-            </Routes>
-          </main>
-        </div>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main className="flex-1">
+              <Routes>
+                <Route index element={<Home />} />
+                <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/auth/:pathname" element={<Auth />} />
+                <Route path="/account/:pathname" element={<Account />} />
+              </Routes>
+            </main>
+          </div>
+        </BrowserRouter>
+      </AuthProvider>
     </NeonAuthUIProvider>
   );
 }
