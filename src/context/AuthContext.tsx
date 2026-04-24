@@ -10,12 +10,14 @@ import { authClient } from "../lib/auth";
 
 interface AuthContextType {
   user: User | null;
+  isLoading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null); // data send krbo shbaike tai createContext bucket banalam
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [neonUser, setNeonUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadUser() {
@@ -29,20 +31,23 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         }
       } catch (error) {
         setNeonUser(null);
+      } finally {
+        setIsLoading(false);
       }
     }
     loadUser();
   }, []);
 
+  // user data shbaike share krtesi tai provider use krtesi
   return (
-    <AuthContext.Provider value={{ user: neonUser }}>
+    <AuthContext.Provider value={{ user: neonUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext); // jara use krte chaitese tara useContext diye data access krbe + () vitore bucket name
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }

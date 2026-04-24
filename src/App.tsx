@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Onboarding from "./pages/Onboarding";
 import Auth from "./pages/Auth";
 import Account from "./pages/Account";
+import Profile from "./pages/Profile";
 import Navbar from "./components/layout/Navbar";
 import { NeonAuthUIProvider } from "@neondatabase/neon-js/auth/react";
 import { authClient } from "./lib/auth";
@@ -10,7 +11,7 @@ import AuthProvider from "./context/AuthContext";
 
 function App() {
   return (
-    <NeonAuthUIProvider authClient={authClient}>
+    <NeonAuthUIProvider authClient={authClient} defaultTheme="dark">
       <AuthProvider>
         <BrowserRouter>
           <div className="min-h-screen flex flex-col">
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/auth/:pathname" element={<Auth />} />
                 <Route path="/account/:pathname" element={<Account />} />
+                <Route path="/profile" element={<Profile />} />
               </Routes>
             </main>
           </div>
