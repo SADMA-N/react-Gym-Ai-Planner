@@ -1,19 +1,11 @@
-export interface User {
-  id: string;
-  email: string;
-  createdAt: Date;
-}
-
 export interface UserProfile {
-  userId: string;
-  goal: "cut" | "bulk" | "recomp" | "strength" | "endurance";
-  experience: "beginner" | "intermediate" | "advanced";
-  daysPerWeek: number;
-  sessionLength: number;
-  equipment: "full_gym" | "home" | "dumbbells";
-  injuries?: string;
-  preferredSplit: "full_body" | "upper_lower" | "ppl" | "custom";
-  updatedAt: string;
+  goal: string;
+  experience: string;
+  days_per_week: number;
+  session_length: number;
+  equipment: string;
+  injuries?: string | null;
+  preferred_split: string;
 }
 
 export interface PlanOverview {

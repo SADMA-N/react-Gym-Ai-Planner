@@ -1,8 +1,15 @@
 import "dotenv/config";
+import { neonConfig } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "../../generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import ws from "ws";
 
-const connectionString = process.env.DATABASE_URL;
+neonConfig.webSocketConstructor = ws;
 
-const adapter = new PrismaPg({ connectionString });
-export const prisma = new PrismaClient({ adapter }); // npx prisma generate
+const connectionString = (process.env.DATABASE_URL ?? "").replace(
+  "&channel_binding=require",
+  "",
+);
+
+const adapter = new PrismaNeon({ connectionString });
+export const prisma = new PrismaClient({ adapter });

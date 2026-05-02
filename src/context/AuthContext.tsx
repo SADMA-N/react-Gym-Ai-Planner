@@ -5,12 +5,17 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { User } from "../types";
+import type { User, UserProfile } from "../types";
 import { authClient } from "../lib/auth";
+import { api } from "../lib/api";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
+  saveProfile: (
+    profile: Omit<UserProfile, "userId" | "updatedAt">,
+  ) => Promise<void>;
+  generatePlan: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null); // data send krbo shbaike tai createContext bucket banalam
@@ -25,7 +30,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         const result = await authClient.getSession();
         if (result && result.data?.user) {
           setNeonUser(result.data.user);
-          console.log(result.data.user);
         } else {
           setNeonUser(null);
         }
@@ -35,12 +39,30 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
       }
     }
+
     loadUser();
   }, []);
 
+  async function saveProfile(
+    profileData: Omit<UserProfile, "userId" | "updatedAt">,
+  ) {
+    if (!neonUser) {
+      throw new Error("User must be authenticated to save profile");
+    }
+    await api.saveProfile(neonUser.id, profileData);
+  }
+
+  async function generatePlan() {
+    if (!neonUser) {
+      throw new Error("User must be authenticated to generate plan");
+    }
+    await api.generatePlan(neonUser.id);
+  }
   // user data shbaike share krtesi tai provider use krtesi
   return (
-    <AuthContext.Provider value={{ user: neonUser, isLoading }}>
+    <AuthContext.Provider
+      value={{ user: neonUser, isLoading, saveProfile, generatePlan }}
+    >
       {children}
     </AuthContext.Provider>
   );
