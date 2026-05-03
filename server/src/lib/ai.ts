@@ -18,22 +18,22 @@ export async function generateTrainingPlan(
     preferred_split: profile.preferred_split || "upper_lower",
   };
 
-  // connect to openai // using openRouter to use multiple ai
-  const apiKey = process.env.OPEN_ROUTER_KEY;
+  // connect to Groq // using Groq for fast free inference
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    throw new Error("OpenAI API key is not set in environment variables");
+    throw new Error("GROQ_API_KEY is not set in environment variables");
   }
 
-  //OpenAi client  // using openRouter using OpenAi
+  //Groq client // using OpenAi SDK with Groq baseURL
   const openai = new OpenAI({
     apiKey,
-    baseURL: "https://openrouter.ai/api/v1",
+    baseURL: "https://api.groq.com/openai/v1",
     defaultHeaders: {
       "HTTP-Referer": process.env.BASE_URL || "http://localhost:3001",
       "X-Title": "GymAI Plan Generator",
     },
   });
-  // OpenAi has couple models but openRouter allows you to access all models
+  // Groq supports OpenAi-compatible API with much higher free rate limits
 
   // Create prompt for AI
   const prompt = buildPrompt(normalizedProfile);
@@ -41,7 +41,7 @@ export async function generateTrainingPlan(
   //gonna make the APi call to openAI
   try {
     const completion = await openai.chat.completions.create({
-      model: "nousresearch/hermes-3-llama-3.1-405b:free",
+      model: "llama-3.1-8b-instant",
       messages: [
         {
           role: "system",
@@ -105,8 +105,11 @@ function formatPlanResponse(
       })),
     })),
     progression:
-      aiResponse.progression ||
-      "Increase weight by 2.5-5lbs when you can complete all sets with good form. Track your progress weekly.",
+      typeof aiResponse.progression === "string"
+        ? aiResponse.progression
+        : aiResponse.progression?.strategy ||
+          JSON.stringify(aiResponse.progression) ||
+          "Increase weight by 2.5-5lbs when you can complete all sets with good form. Track your progress weekly.",
   };
   return plan;
 }

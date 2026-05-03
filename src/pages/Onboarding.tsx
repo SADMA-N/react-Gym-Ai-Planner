@@ -87,11 +87,12 @@ export default function Onboarding() {
       preferredSplit: formData.preferredSplit as UserProfile["preferredSplit"],
     };
 
+    setIsGenerating(true);
     try {
       await saveProfile(profile);
-      setIsGenerating(false);
+      setIsGenerating(true);
       await generatePlan();
-      navigate("profile");
+      navigate("/profile");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save profile");
     } finally {
