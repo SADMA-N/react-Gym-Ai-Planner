@@ -30,11 +30,11 @@ export const api = {
     userId: string,
     profile: Omit<UserProfile, "userId" | "updatedAt">,
   ) => {
-    return post("/profile", { userId, ...profile });
+    return post("/profile", { userId, ...profile }); // HTTP POST localhost:3001/api/profile
   },
 
   generatePlan: (userId: string) => {
-    return post("/plan/generate", { userId });
+    return post("/plan/generate", { userId }); // HTTP POST localhost:3001/api/plan/generate
   },
 
   getCurrentPlan: (userId: string) => {

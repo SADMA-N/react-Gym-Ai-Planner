@@ -53,6 +53,8 @@ const splitOptions = [
 
 export default function Onboarding() {
   const { user, saveProfile, generatePlan } = useAuth();
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   //track data from form
   const [formData, setFormData] = useState({
@@ -65,8 +67,6 @@ export default function Onboarding() {
     preferredSplit: "upper_lower",
   });
 
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   function updateForm(field: string, value: string) {
@@ -89,7 +89,7 @@ export default function Onboarding() {
 
     setIsGenerating(true);
     try {
-      await saveProfile(profile);
+      await saveProfile(profile); // DB update + save info
       setIsGenerating(true);
       await generatePlan();
       navigate("/profile");

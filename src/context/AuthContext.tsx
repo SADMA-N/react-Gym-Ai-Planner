@@ -71,7 +71,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       // Fetch profile
       // const profileData =
 
-      // Fetch Plan
+      //fetch latest plan from DB
       const planData = await api.getCurrentPlan(neonUser.id).catch(() => null);
       if (planData) {
         setPlan({

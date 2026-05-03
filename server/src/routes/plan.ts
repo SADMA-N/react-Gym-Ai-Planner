@@ -46,6 +46,7 @@ planRouter.post("/generate", async (req: Request, res: Response) => {
 
     const planText = JSON.stringify(planJson, null, 2);
 
+    //plan saved to training_plans table (prisma)
     const newPlan = await prisma.training_plans.create({
       data: {
         user_id: userId,
